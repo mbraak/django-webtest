@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import copy
+from functools import partial
 
 from django.conf import settings
 from django.test.signals import template_rendered
 from django.core.handlers.wsgi import WSGIHandler
 from django.test import TestCase, TransactionTestCase
 from django.test.client import store_rendered_templates
-from django.utils.functional import curry
 
 try:
     from importlib import import_module
@@ -91,7 +91,7 @@ class DjangoTestApp(TestApp):
             # Curry a data dictionary into an instance of the template renderer
             # callback function.
             data = {}
-            on_template_render = curry(store_rendered_templates, data)
+            on_template_render = partial(store_rendered_templates, data)
             template_rendered.connect(on_template_render)
 
             response = super(DjangoTestApp, self).do_request(req, status,
